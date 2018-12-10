@@ -8,6 +8,7 @@ export function reducer(state, action) {
             ...state,
             showProductCode: action.payload
         };
+        
         default:
         return state;
     }
