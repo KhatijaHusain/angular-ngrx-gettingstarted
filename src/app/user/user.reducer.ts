@@ -1,4 +1,19 @@
-export function reducer(state, action){
+import * as fromRoot from '../state/app.state';
+
+export interface State extends fromRoot.State {
+    user : UserState;
+}
+
+export interface UserState {
+    maskUserName: boolean;
+}
+
+const initialState : UserState = {
+    maskUserName : false
+};
+
+
+export function reducer(state = initialState, action) : UserState{
 
     switch(action.type) {
         case 'MASK_USER_NAME': 

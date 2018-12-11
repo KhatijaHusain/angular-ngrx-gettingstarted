@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 import { AuthService } from './auth.service';
 import { Store, select } from '@ngrx/store';
+import * as fromUser from './user.reducer'
 
 @Component({
   templateUrl: './login.component.html',
@@ -12,10 +13,9 @@ import { Store, select } from '@ngrx/store';
 export class LoginComponent implements OnInit {
   pageTitle = 'Log In';
   errorMessage: string;
-
   maskUserName: boolean;
 
-  constructor(private store:Store<any>,private authService: AuthService,
+  constructor(private store:Store<fromUser.State>,private authService: AuthService,
               private router: Router) {
   }
 
