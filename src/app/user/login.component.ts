@@ -20,12 +20,10 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.store.pipe(select('user')).subscribe(
-      user => {
-        if(user)
-        this.maskUserName = user.maskUserName;
-      }
-    )};  
+    this.store.pipe(select(fromUser.getShowProductCode)).subscribe(
+      maskUserName => { this.maskUserName = maskUserName;
+      });  
+    }
 
   cancel(): void {
     this.router.navigate(['welcome']);

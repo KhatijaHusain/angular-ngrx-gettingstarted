@@ -1,4 +1,5 @@
 import * as fromRoot from '../state/app.state';
+import { createSelector, createFeatureSelector } from '@ngrx/store';
 
 export interface State extends fromRoot.State {
     user : UserState;
@@ -12,6 +13,12 @@ const initialState : UserState = {
     maskUserName : false
 };
 
+const getUserFeatureState = createFeatureSelector<UserState>('user');
+
+export const getShowProductCode = createSelector(
+    getUserFeatureState,
+    state => state.maskUserName
+);
 
 export function reducer(state = initialState, action) : UserState{
 
