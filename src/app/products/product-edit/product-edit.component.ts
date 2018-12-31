@@ -9,6 +9,7 @@ import { GenericValidator } from '../../shared/generic-validator';
 import { NumberValidators } from '../../shared/number.validator';
 import { Store, select } from '@ngrx/store';
 import * as fromActions from '../state/product.action';
+import * as fromReducer from '../state/product.reducer';
 
 @Component({
   selector: 'pm-product-edit',
@@ -22,14 +23,14 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   productForm: FormGroup;
 
   product: Product | null;
-  sub: Subscription;
 
   // Use with the generic validation message class
   displayMessage: { [key: string]: string } = {};
   private validationMessages: { [key: string]: { [key: string]: string } };
   private genericValidator: GenericValidator;
 
-  constructor(private fb: FormBuilder,
+  constructor(private store: Store<fromReducer.State>,
+    private fb: FormBuilder,
               private productService: ProductService) {
 
     // Defines all of the validation messages for the form.
@@ -65,8 +66,8 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     });
 
     // Watch for changes to the currently selected product
-    this.sub = this.productService.selectedProductChanges$.subscribe(
-      selectedProduct => this.displayProduct(selectedProduct)
+    this.store.pipe(select(fromReducer.getCurrentProduct)).subscribe(
+      currentProduct => this.displayProduct(currentProduct)
     );
 
     // Watch for value changes
@@ -76,7 +77,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.sub.unsubscribe();
   }
 
   // Also validate on blur
@@ -119,7 +119,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   deleteProduct(): void {
     if (this.product && this.product.id) {
       if (confirm(`Really delete the product: ${this.product.productName}?`)) {
-        this.productService.deleteProduct(this.product.id).subscribe(
+        this.store.dispatch(new fromActions.ClearCurrentProduct()),
           () => this.store.dispatch(new fromActions.ClearCurrentProduct()),
           (err: any) => this.errorMessage = err.error
         );

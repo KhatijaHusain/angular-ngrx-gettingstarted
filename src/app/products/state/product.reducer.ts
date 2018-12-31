@@ -33,7 +33,7 @@ export const getCurrentProduct = store.createSelector(
 
 export const getProduct = store.createSelector(
     getProductFeatureState,
-    state => state.Product
+    state => state.products
 );
 
 export function reducer(state = initialState, action:ProductAction): ProductState {
@@ -67,6 +67,11 @@ export function reducer(state = initialState, action:ProductAction): ProductStat
             }
         }
 
+        case ProductActionTypes.LoadSuccess:
+        return {
+            ...state,
+            products: action.payload
+        }
         default:
         return state;
     }
