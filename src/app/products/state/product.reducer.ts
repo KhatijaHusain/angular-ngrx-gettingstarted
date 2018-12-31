@@ -1,6 +1,7 @@
 import { Product } from "../product";
 import * as fromRoot from '../../state/app.state';
-import { createFeatureSelector, createSelector } from "@ngrx/store";
+import * as store from "@ngrx/store";
+import { ProductAction, ProductActionTypes } from "./product.action";
 
 export interface State extends fromRoot.State{
     products: ProductState;
@@ -18,23 +19,53 @@ showProductCode : true,
 products : []
 };
 
-const getProductFeatureState = createFeatureSelector<ProductState>('products');
+const getProductFeatureState = store.createFeatureSelector<ProductState>('products');
 
-export const getShowProductCode = createSelector(
+export const getShowProductCode = store.createSelector(
     getProductFeatureState,
     state => state.showProductCode
 );
 
-export function reducer(state = initialState, action): ProductState {
+export const getCurrentProduct = store.createSelector(
+    getProductFeatureState,
+    state => state.currentProduct
+);
+
+export const getProduct = store.createSelector(
+    getProductFeatureState,
+    state => state.Product
+);
+
+export function reducer(state = initialState, action:ProductAction): ProductState {
     switch (action.type) {
 
-        case 'TOGGLE_PRODUCT_CODE':
+        case ProductActionTypes.ToggleProductCode:
         console.log('existing state'+ JSON.stringify(state));
         console.log('payload'+ action.payload);
         return {
-            ...state,
-            showProductCode: action.payload
+            ...state, showProductCode: action.payload
         };
+
+        case ProductActionTypes.SetCurrentProduct:
+        return {
+            ...state, currentProduct: {...action.payload}
+        }
+
+        case ProductActionTypes.ClearCurrentProduct:
+        return {
+            ...state, currentProduct: null
+        }
+
+        case ProductActionTypes.InitializeCurrentProduct:
+        return {
+            ...state, currentProduct: {
+                id: 0,
+                productCode : 'New',
+                productName: '',
+                description: '',
+                starRating: 0
+            }
+        }
 
         default:
         return state;
